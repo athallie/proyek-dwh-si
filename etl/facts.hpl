@@ -93,7 +93,7 @@
 , publisher
 , language
 , publication_date
-, page
+, pages
 FROM gravity_books_dwh.book
 </sql>
     <variables_active>N</variables_active>
@@ -220,12 +220,12 @@ FROM gravity_books_dwh.customer
     <sql>SELECT
     c.customer_id,
     b.book_id,
-    YEAR(oh.status_date) AS year,
-    MONTH(oh.status_date) AS month,  
-    DAY(oh.status_date) AS day,
-    HOUR(oh.status_date) AS hour,
-    MINUTE(oh.status_date) AS minute,
-    SECOND(oh.status_date) AS second,
+    YEAR(o.order_date) AS order_year,
+    MONTH(o.order_date) AS order_month,  
+    DAY(o.order_date) AS order_day,
+    HOUR(o.order_date) AS order_hour,
+    MINUTE(o.order_date) AS order_minute,
+    SECOND(o.order_date) AS order_second,
     s.method_id,
     SUM(ol.price) AS revenue_book_sales
 FROM
@@ -247,12 +247,11 @@ WHERE
 GROUP BY
     c.customer_id,
     b.book_id,
-    oh.status_date,
+    o.order_date,
     s.method_id
 ORDER BY
     c.customer_id,
-    b.book_id,
-    oh.status_date</sql>
+    b.book_id, o.order_date</sql>
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>

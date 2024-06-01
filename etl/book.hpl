@@ -379,7 +379,6 @@ FROM gravity_books.book
         <condition>=</condition>
         <field>book_id</field>
         <name>book_id</name>
-        <name2/>
       </key>
       <schema>gravity_books_dwh</schema>
       <table>book</table>
@@ -414,8 +413,8 @@ FROM gravity_books.book
         <update>Y</update>
       </value>
       <value>
-        <name>page</name>
-        <rename>page</rename>
+        <name>pages</name>
+        <rename>pages</rename>
         <update>Y</update>
       </value>
     </lookup>
@@ -529,11 +528,9 @@ FROM gravity_books.publisher
     <fields>
       <field>
         <name>book_id</name>
-        <rename/>
       </field>
       <field>
         <name>title</name>
-        <rename/>
       </field>
       <field>
         <name>author_name</name>
@@ -549,11 +546,10 @@ FROM gravity_books.publisher
       </field>
       <field>
         <name>publication_date</name>
-        <rename/>
       </field>
       <field>
         <name>num_pages</name>
-        <rename>page</rename>
+        <rename>pages</rename>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>

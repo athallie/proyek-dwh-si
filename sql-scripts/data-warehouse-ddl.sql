@@ -1,59 +1,59 @@
-create database gravity_books_dwh;
-alter database gravity_books_dwh
+CREATE DATABASE gravity_books_dwh;
+ALTER DATABASE gravity_books_dwh
     CHARACTER SET = 'utf8mb4'
     COLLATE = 'utf8mb4_general_ci';
 
-create table if not exists customer (
-    customer_id int,
-    name varchar(1000),
-    country varchar(100),
-    city varchar(100),
-    street_name varchar(500),
-    street_number varchar(100),
-    primary key (customer_id, street_name, street_number)
+CREATE TABLE IF NOT EXISTS customer (
+    customer_id INT,
+    customer_sk SERIAL,
+    name VARCHAR(1000),
+    country VARCHAR(100),
+    city VARCHAR(100),
+    street_name VARCHAR(500),
+    street_number VARCHAR(100),
+    PRIMARY KEY (customer_id, street_name, street_number)
 );
-alter table customer add customer_sk int not null unique auto_increment;
 
-create table if not exists time (
-    time_id int primary key,
-    year int,
-    month int,
-    day int,
-    hour int,
-    minute int,
-    second int
+CREATE TABLE IF NOT EXISTS time (
+    time_id INT PRIMARY KEY,
+    time_sk SERIAL UNIQUE,
+    year INT,
+    month INT,
+    day INT,
+    hour INT,
+    minute INT,
+    second INT
 );
-alter table time add time_sk int not null unique auto_increment;
 
-create table if not exists shipping_method (
-    method_id int primary key,
-    method_name varchar(100),
-    cost decimal
+CREATE TABLE IF NOT EXISTS shipping_method (
+    method_id INT PRIMARY KEY,
+    method_sk SERIAL,
+    method_name VARCHAR(100),
+    cost DECIMAL
 );
-alter table shipping_method add method_sk int not null unique auto_increment;
 
-create table if not exists book (
-    book_id int primary key,
-    title varchar(500),
-    author varchar(1000),
-    publisher varchar(500),
-    language varchar(100),
-    publication_date date,
-    page int
+CREATE TABLE IF NOT EXISTS book (
+    book_id INT PRIMARY KEY,
+    book_sk SERIAL,
+    title VARCHAR(500),
+    author VARCHAR(1000),
+    publisher VARCHAR(500),
+    language VARCHAR(100),
+    publication_date DATE,
+    pages INT
 );
-alter table book add book_sk int not null unique auto_increment;
 
-create table if not exists book_sales_facts (
-    book_sales_facts_id int auto_increment primary key,
-    time_sk int not null unique,
-    customer_sk int not null unique,
-    method_sk int not null unique,
-    book_sk int not null unique,
+CREATE TABLE IF NOT EXISTS book_sales_facts (
+    book_sales_facts_id SERIAL PRIMARY KEY,
+    time_sk BIGINT UNSIGNED,
+    customer_sk BIGINT UNSIGNED,
+    method_sk BIGINT UNSIGNED,
+    book_sk BIGINT UNSIGNED,
     revenue_book_sales DECIMAL(10, 2),
     CONSTRAINT time_fk FOREIGN KEY (time_sk) REFERENCES time (time_sk),
     CONSTRAINT customer_fk FOREIGN KEY (customer_sk) REFERENCES customer (customer_sk),
     CONSTRAINT method_fk FOREIGN KEY (method_sk) REFERENCES shipping_method (method_sk),
-    CONSTRAINT book_fk FOREIGN KEY (book_sk) REFERENCES book (book_sk)
+    CONSTRAINT book_fk FOREIGN KEY (book_sk) REFERENCES book(book_sk)
 );
 
 /*Delete All*/
