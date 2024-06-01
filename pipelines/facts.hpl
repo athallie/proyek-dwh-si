@@ -20,6 +20,56 @@
   <notepads>
   </notepads>
   <order>
+    <hop>
+      <from>Time Dimension</from>
+      <to>Order with Time ID</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Order Table</from>
+      <to>Order with Time ID</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Order with Time ID</from>
+      <to>Order with Book Id</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Book Dimension</from>
+      <to>Order with Book Id</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Order with Book Id</from>
+      <to>Order With Customer ID</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Customer Dimension</from>
+      <to>Order With Customer ID</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Order With Customer ID</from>
+      <to>Order With Shipping SK</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Shipping Method Dimension</from>
+      <to>Order With Shipping SK</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Order With Shipping SK</from>
+      <to>Table Fact</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table Fact</from>
+      <to>Insert / update</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <transform>
     <name>Book Dimension</name>
@@ -32,7 +82,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Books Data Warehouse</connection>
+    <connection>Gravity Bookstore DWH</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
@@ -41,16 +91,16 @@
 , title
 , author
 , publisher
-, "language"
+, language
 , publication_date
 , pages
-FROM "public".book
+FROM gravity_books_dwh.book
 </sql>
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>
-      <xloc>176</xloc>
-      <yloc>208</yloc>
+      <xloc>544</xloc>
+      <yloc>128</yloc>
     </GUI>
   </transform>
   <transform>
@@ -64,24 +114,306 @@ FROM "public".book
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Books Data Warehouse</connection>
+    <connection>Gravity Bookstore DWH</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
   customer_id
 , customer_sk
-, "name"
+, name
 , country
 , city
 , street_name
 , street_number
-FROM "public".customer
+FROM gravity_books_dwh.customer
 </sql>
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>
-      <xloc>176</xloc>
-      <yloc>320</yloc>
+      <xloc>784</xloc>
+      <yloc>128</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Insert / update</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <commit>100</commit>
+    <connection>Gravity Bookstore DWH</connection>
+    <lookup>
+      <key>
+        <condition>=</condition>
+        <field>time_sk</field>
+        <name>time_sk</name>
+      </key>
+      <key>
+        <condition>=</condition>
+        <field>customer_sk</field>
+        <name>customer_sk</name>
+      </key>
+      <key>
+        <condition>=</condition>
+        <field>method_sk</field>
+        <name>method_sk</name>
+      </key>
+      <key>
+        <condition>=</condition>
+        <field>book_sk</field>
+        <name>book_sk</name>
+      </key>
+      <schema/>
+      <table>book_sales_facts</table>
+      <value>
+        <name>time_sk</name>
+        <rename>time_sk</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>customer_sk</name>
+        <rename>customer_sk</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>method_sk</name>
+        <rename>method_sk</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>book_sk</name>
+        <rename>book_sk</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>revenue_book_sales</name>
+        <rename>revenue_book_sales</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <update_bypassed>N</update_bypassed>
+    <attributes/>
+    <GUI>
+      <xloc>864</xloc>
+      <yloc>512</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Order Table</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>Gravity Book Store</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>SELECT
+    c.customer_id,
+    b.book_id,
+    YEAR(oh.status_date) AS year,
+    MONTH(oh.status_date) AS month,  
+    DAY(oh.status_date) AS day,
+    HOUR(oh.status_date) AS hour,
+    MINUTE(oh.status_date) AS minute,
+    SECOND(oh.status_date) AS second,
+    s.method_id,
+    SUM(ol.price) AS revenue_book_sales
+FROM
+    cust_order o
+JOIN
+    order_line ol ON o.order_id = ol.order_id
+JOIN
+    customer c ON o.customer_id = c.customer_id
+JOIN
+    book b ON ol.book_id = b.book_id
+JOIN
+    shipping_method s ON o.shipping_method_id = s.method_id
+JOIN
+    order_history oh ON o.order_id = oh.order_id  
+JOIN
+    order_status os ON oh.status_id = os.status_id  
+WHERE
+    os.status_id = 4  
+GROUP BY
+    c.customer_id,
+    b.book_id,
+    oh.status_date,
+    s.method_id
+ORDER BY
+    c.customer_id,
+    b.book_id,
+    oh.status_date</sql>
+    <variables_active>N</variables_active>
+    <attributes/>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>128</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Order With Customer ID</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <from>Customer Dimension</from>
+    <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
+    <lookup>
+      <key>
+        <name>customer_id</name>
+        <field>customer_id</field>
+      </key>
+      <value>
+        <name>customer_sk</name>
+        <rename>customer_sk</rename>
+        <default/>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <GUI>
+      <xloc>784</xloc>
+      <yloc>304</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Order With Shipping SK</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <from>Shipping Method Dimension</from>
+    <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
+    <lookup>
+      <key>
+        <name>method_id</name>
+        <field>method_id</field>
+      </key>
+      <value>
+        <name>method_sk</name>
+        <rename>method_sk</rename>
+        <default/>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <GUI>
+      <xloc>1056</xloc>
+      <yloc>304</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Order with Book Id</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <from>Book Dimension</from>
+    <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
+    <lookup>
+      <key>
+        <name>book_id</name>
+        <field>book_id</field>
+      </key>
+      <value>
+        <name>book_sk</name>
+        <rename>book_sk</rename>
+        <default/>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <GUI>
+      <xloc>544</xloc>
+      <yloc>304</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Order with Time ID</name>
+    <type>StreamLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <from>Time Dimension</from>
+    <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
+    <lookup>
+      <key>
+        <name>year</name>
+        <field>year</field>
+      </key>
+      <key>
+        <name>month</name>
+        <field>month</field>
+      </key>
+      <key>
+        <name>day</name>
+        <field>day</field>
+      </key>
+      <key>
+        <name>hour</name>
+        <field>hour</field>
+      </key>
+      <key>
+        <name>minute</name>
+        <field>minute</field>
+      </key>
+      <key>
+        <name>second</name>
+        <field>second</field>
+      </key>
+      <value>
+        <name>time_sk</name>
+        <rename>time_sk</rename>
+        <default/>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <GUI>
+      <xloc>320</xloc>
+      <yloc>304</yloc>
     </GUI>
   </transform>
   <transform>
@@ -95,7 +427,7 @@ FROM "public".customer
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Books Data Warehouse</connection>
+    <connection>Gravity Bookstore DWH</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
@@ -103,13 +435,48 @@ FROM "public".customer
 , method_sk
 , method_name
 , cost
-FROM "public".shipping_method
+FROM gravity_books_dwh.shipping_method
 </sql>
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>
-      <xloc>176</xloc>
-      <yloc>432</yloc>
+      <xloc>1056</xloc>
+      <yloc>128</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Table Fact</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>customer_sk</name>
+      </field>
+      <field>
+        <name>book_sk</name>
+      </field>
+      <field>
+        <name>method_sk</name>
+      </field>
+      <field>
+        <name>time_sk</name>
+      </field>
+      <field>
+        <name>revenue_book_sales</name>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <GUI>
+      <xloc>1056</xloc>
+      <yloc>512</yloc>
     </GUI>
   </transform>
   <transform>
@@ -123,25 +490,25 @@ FROM "public".shipping_method
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Books Data Warehouse</connection>
+    <connection>Gravity Bookstore DWH</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
   time_id
 , time_sk
-, "year"
-, "month"
-, "day"
-, "hour"
-, "minute"
-, "second"
-FROM "public"."time"
+, year
+, month
+, day
+, hour
+, minute
+, second
+FROM gravity_books_dwh.time
 </sql>
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>
-      <xloc>176</xloc>
-      <yloc>96</yloc>
+      <xloc>96</xloc>
+      <yloc>304</yloc>
     </GUI>
   </transform>
   <transform_error_handling>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pipeline>
   <info>
-    <name>proyek-dwh-time</name>
+    <name>time</name>
     <name_sync_with_filename>Y</name_sync_with_filename>
     <description/>
     <extended_description/>
@@ -21,12 +21,12 @@
   </notepads>
   <order>
     <hop>
-      <from>Order History Table</from>
-      <to>Finished Orders</to>
+      <from>Rename Fields</from>
+      <to>Export Time</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Finished Orders</from>
+      <from>Cust Order Table</from>
       <to>Split Time</to>
       <enabled>Y</enabled>
     </hop>
@@ -35,15 +35,10 @@
       <to>Rename Fields</to>
       <enabled>Y</enabled>
     </hop>
-    <hop>
-      <from>Rename Fields</from>
-      <to>Export Time</to>
-      <enabled>Y</enabled>
-    </hop>
   </order>
   <transform>
-    <name>Split Time</name>
-    <type>Calculator</type>
+    <name>Cust Order Table</name>
+    <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -52,137 +47,21 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <calculation>
-      <calc_type>YEAR_OF_DATE</calc_type>
-      <conversion_mask/>
-      <currency_symbol/>
-      <decimal_symbol/>
-      <field_a>status_date</field_a>
-      <field_b/>
-      <field_c/>
-      <field_name>Year</field_name>
-      <grouping_symbol/>
-      <remove>N</remove>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <value_type/>
-    </calculation>
-    <calculation>
-      <calc_type>MONTH_OF_DATE</calc_type>
-      <conversion_mask/>
-      <currency_symbol/>
-      <decimal_symbol/>
-      <field_a>status_date</field_a>
-      <field_b/>
-      <field_c/>
-      <field_name>Month</field_name>
-      <grouping_symbol/>
-      <remove>N</remove>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <value_type/>
-    </calculation>
-    <calculation>
-      <calc_type>DAY_OF_MONTH</calc_type>
-      <conversion_mask/>
-      <currency_symbol/>
-      <decimal_symbol/>
-      <field_a>status_date</field_a>
-      <field_b/>
-      <field_c/>
-      <field_name>Day</field_name>
-      <grouping_symbol/>
-      <remove>N</remove>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <value_type/>
-    </calculation>
-    <calculation>
-      <calc_type>HOUR_OF_DAY</calc_type>
-      <conversion_mask/>
-      <currency_symbol/>
-      <decimal_symbol/>
-      <field_a>status_date</field_a>
-      <field_b/>
-      <field_c/>
-      <field_name>Hour</field_name>
-      <grouping_symbol/>
-      <remove>N</remove>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <value_type/>
-    </calculation>
-    <calculation>
-      <calc_type>MINUTE_OF_HOUR</calc_type>
-      <conversion_mask/>
-      <currency_symbol/>
-      <decimal_symbol/>
-      <field_a>status_date</field_a>
-      <field_b/>
-      <field_c/>
-      <field_name>Minute</field_name>
-      <grouping_symbol/>
-      <remove>N</remove>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <value_type/>
-    </calculation>
-    <calculation>
-      <calc_type>SECOND_OF_MINUTE</calc_type>
-      <conversion_mask/>
-      <currency_symbol/>
-      <decimal_symbol/>
-      <field_a>status_date</field_a>
-      <field_b/>
-      <field_c/>
-      <field_name>Second</field_name>
-      <grouping_symbol/>
-      <remove>N</remove>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <value_type/>
-    </calculation>
-    <failIfNoFile>Y</failIfNoFile>
+    <connection>Gravity Books DB</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit>0</limit>
+    <sql>SELECT
+  order_id
+, order_date
+, customer_id
+, shipping_method_id
+, dest_address_id
+FROM gravity_books.cust_order
+</sql>
+    <variables_active>N</variables_active>
     <attributes/>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>176</yloc>
-    </GUI>
-  </transform>
-  <transform>
-    <name>Finished Orders</name>
-    <type>FilterRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <compare>
-      <condition>
-        <conditions>
-</conditions>
-        <function>=</function>
-        <leftvalue>status_id</leftvalue>
-        <negated>N</negated>
-        <operator>-</operator>
-        <value>
-          <isnull>N</isnull>
-          <length>-1</length>
-          <mask>####0;-####0</mask>
-          <name>constant</name>
-          <precision>0</precision>
-          <text>4</text>
-          <type>Integer</type>
-        </value>
-      </condition>
-    </compare>
-    <send_true_to>Split Time</send_true_to>
-    <attributes/>
-    <GUI>
-      <xloc>336</xloc>
+      <xloc>224</xloc>
       <yloc>176</yloc>
     </GUI>
   </transform>
@@ -206,16 +85,11 @@
         <name>time_id</name>
         <name2/>
       </key>
-      <schema>"public"</schema>
-      <table>"time"</table>
+      <schema>gravity_books_dwh</schema>
+      <table>time</table>
       <value>
         <name>time_id</name>
         <rename>time_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>time_sk</name>
-        <rename>time_sk</rename>
         <update>Y</update>
       </value>
       <value>
@@ -257,34 +131,6 @@
     </GUI>
   </transform>
   <transform>
-    <name>Order History Table</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>Gravity Books DB</connection>
-    <execute_each_row>N</execute_each_row>
-    <limit>0</limit>
-    <sql>SELECT
-  history_id
-, order_id
-, status_id
-, status_date
-FROM gravity_books.order_history
-</sql>
-    <variables_active>N</variables_active>
-    <attributes/>
-    <GUI>
-      <xloc>224</xloc>
-      <yloc>176</yloc>
-    </GUI>
-  </transform>
-  <transform>
     <name>Rename Fields</name>
     <type>SelectValues</type>
     <description/>
@@ -297,42 +143,98 @@ FROM gravity_books.order_history
     </partitioning>
     <fields>
       <field>
-        <name>history_id</name>
+        <name>order_id</name>
         <rename>time_id</rename>
       </field>
       <field>
-        <name>status_date</name>
-        <rename>time_sk</rename>
-      </field>
-      <field>
         <name>Year</name>
-        <rename/>
       </field>
       <field>
         <name>Month</name>
-        <rename/>
       </field>
       <field>
         <name>Day</name>
-        <rename/>
       </field>
       <field>
         <name>Hour</name>
-        <rename/>
       </field>
       <field>
         <name>Minute</name>
-        <rename/>
       </field>
       <field>
         <name>Second</name>
-        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
     <attributes/>
     <GUI>
       <xloc>528</xloc>
+      <yloc>176</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Split Time</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <calculation>
+      <calc_type>YEAR_OF_DATE</calc_type>
+      <field_a>order_date</field_a>
+      <field_name>Year</field_name>
+      <remove>N</remove>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+    </calculation>
+    <calculation>
+      <calc_type>MONTH_OF_DATE</calc_type>
+      <field_a>order_date</field_a>
+      <field_name>Month</field_name>
+      <remove>N</remove>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+    </calculation>
+    <calculation>
+      <calc_type>DAY_OF_MONTH</calc_type>
+      <field_a>order_date</field_a>
+      <field_name>Day</field_name>
+      <remove>N</remove>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+    </calculation>
+    <calculation>
+      <calc_type>HOUR_OF_DAY</calc_type>
+      <field_a>order_date</field_a>
+      <field_name>Hour</field_name>
+      <remove>N</remove>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+    </calculation>
+    <calculation>
+      <calc_type>MINUTE_OF_HOUR</calc_type>
+      <field_a>order_date</field_a>
+      <field_name>Minute</field_name>
+      <remove>N</remove>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+    </calculation>
+    <calculation>
+      <calc_type>SECOND_OF_MINUTE</calc_type>
+      <field_a>order_date</field_a>
+      <field_name>Second</field_name>
+      <remove>N</remove>
+      <value_length>-1</value_length>
+      <value_precision>-1</value_precision>
+    </calculation>
+    <failIfNoFile>Y</failIfNoFile>
+    <attributes/>
+    <GUI>
+      <xloc>384</xloc>
       <yloc>176</yloc>
     </GUI>
   </transform>

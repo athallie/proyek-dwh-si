@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pipeline>
   <info>
-    <name>proyek-dwh-customer</name>
+    <name>customer</name>
     <name_sync_with_filename>Y</name_sync_with_filename>
     <description/>
     <extended_description/>
@@ -245,6 +245,7 @@ FROM gravity_books.customer_address
       </field>
       <field>
         <name>country_name</name>
+        <rename>country</rename>
       </field>
       <field>
         <name>city</name>
@@ -431,7 +432,7 @@ FROM gravity_books.customer
         <field>street_number</field>
         <name>street_number</name>
       </key>
-      <schema>"public"</schema>
+      <schema>gravity_books_dwh</schema>
       <table>customer</table>
       <value>
         <name>customer_id</name>
@@ -441,6 +442,11 @@ FROM gravity_books.customer
       <value>
         <name>name</name>
         <rename>name</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>country</name>
+        <rename>country</rename>
         <update>Y</update>
       </value>
       <value>
@@ -456,11 +462,6 @@ FROM gravity_books.customer
       <value>
         <name>street_number</name>
         <rename>street_number</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>country</name>
-        <rename>country_name</rename>
         <update>Y</update>
       </value>
     </lookup>

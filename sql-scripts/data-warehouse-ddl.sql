@@ -38,3 +38,27 @@ create table if not exists book (
     publication_date date,
     pages integer
 );
+
+CREATE TABLE time (
+    time_id INT PRIMARY KEY,
+    time_sk SERIAL UNIQUE,  
+    year INT,
+    month INT,
+    day INT,
+    hour INT,
+    minute INT,
+    second INT
+);
+
+CREATE TABLE book_sales_facts (
+    book_sales_facts_id SERIAL PRIMARY KEY,
+    time_sk BIGINT UNSIGNED,         
+    customer_sk BIGINT UNSIGNED,
+    method_sk BIGINT UNSIGNED,
+    book_sk BIGINT UNSIGNED,
+    revenue_book_sales DECIMAL(10, 2),
+    CONSTRAINT time_fk FOREIGN KEY (time_sk) REFERENCES time (time_sk), 
+    CONSTRAINT customer_fk FOREIGN KEY (customer_sk) REFERENCES customer (customer_sk),
+    CONSTRAINT method_fk FOREIGN KEY (method_sk) REFERENCES shipping_method (method_sk),
+    CONSTRAINT book_fk FOREIGN KEY (book_sk) REFERENCES book (book_sk)
+);

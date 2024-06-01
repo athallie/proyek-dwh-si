@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pipeline>
   <info>
-    <name>proyek-dwh-book</name>
+    <name>book</name>
     <name_sync_with_filename>Y</name_sync_with_filename>
     <description/>
     <extended_description/>
@@ -379,8 +379,9 @@ FROM gravity_books.book
         <condition>=</condition>
         <field>book_id</field>
         <name>book_id</name>
+        <name2/>
       </key>
-      <schema>"public"</schema>
+      <schema>gravity_books_dwh</schema>
       <table>book</table>
       <value>
         <name>book_id</name>
@@ -393,28 +394,28 @@ FROM gravity_books.book
         <update>Y</update>
       </value>
       <value>
+        <name>author</name>
+        <rename>author</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>publisher</name>
+        <rename>publisher</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>language</name>
+        <rename>language</rename>
+        <update>Y</update>
+      </value>
+      <value>
         <name>publication_date</name>
         <rename>publication_date</rename>
         <update>Y</update>
       </value>
       <value>
-        <name>author</name>
-        <rename>author_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>publisher</name>
-        <rename>publisher_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>language</name>
-        <rename>language_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>pages</name>
-        <rename>num_pages</rename>
+        <name>page</name>
+        <rename>page</rename>
         <update>Y</update>
       </value>
     </lookup>
@@ -528,24 +529,31 @@ FROM gravity_books.publisher
     <fields>
       <field>
         <name>book_id</name>
+        <rename/>
       </field>
       <field>
         <name>title</name>
+        <rename/>
       </field>
       <field>
         <name>author_name</name>
+        <rename>author</rename>
       </field>
       <field>
         <name>publisher_name</name>
+        <rename>publisher</rename>
       </field>
       <field>
         <name>language_name</name>
+        <rename>language</rename>
       </field>
       <field>
         <name>publication_date</name>
+        <rename/>
       </field>
       <field>
         <name>num_pages</name>
+        <rename>page</rename>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
