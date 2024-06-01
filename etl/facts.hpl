@@ -82,7 +82,7 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Bookstore DWH</connection>
+    <connection>Gravity Books Data Warehouse</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
@@ -93,7 +93,7 @@
 , publisher
 , language
 , publication_date
-, pages
+, page
 FROM gravity_books_dwh.book
 </sql>
     <variables_active>N</variables_active>
@@ -114,7 +114,7 @@ FROM gravity_books_dwh.book
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Bookstore DWH</connection>
+    <connection>Gravity Books Data Warehouse</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
@@ -146,7 +146,7 @@ FROM gravity_books_dwh.customer
       <schema_name/>
     </partitioning>
     <commit>100</commit>
-    <connection>Gravity Bookstore DWH</connection>
+    <connection>Gravity Books Data Warehouse</connection>
     <lookup>
       <key>
         <condition>=</condition>
@@ -214,7 +214,7 @@ FROM gravity_books_dwh.customer
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Book Store</connection>
+    <connection>Gravity Books DB</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
@@ -427,7 +427,7 @@ ORDER BY
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Bookstore DWH</connection>
+    <connection>Gravity Books Data Warehouse</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
@@ -490,7 +490,7 @@ FROM gravity_books_dwh.shipping_method
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>Gravity Bookstore DWH</connection>
+    <connection>Gravity Books Data Warehouse</connection>
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT

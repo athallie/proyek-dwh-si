@@ -41,7 +41,7 @@
       <clear_rows>N</clear_rows>
       <create_parent_folder>N</create_parent_folder>
       <exec_per_row>N</exec_per_row>
-      <filename>${PROJECT_HOME}/pipelines/customer.hpl</filename>
+      <filename>${PROJECT_HOME}/etl/customer.hpl</filename>
       <loglevel>Basic</loglevel>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
@@ -67,7 +67,7 @@
       <clear_rows>N</clear_rows>
       <create_parent_folder>N</create_parent_folder>
       <exec_per_row>N</exec_per_row>
-      <filename>${PROJECT_HOME}/pipelines/book.hpl</filename>
+      <filename>${PROJECT_HOME}/etl/book.hpl</filename>
       <loglevel>Basic</loglevel>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
@@ -93,7 +93,7 @@
       <clear_rows>N</clear_rows>
       <create_parent_folder>N</create_parent_folder>
       <exec_per_row>N</exec_per_row>
-      <filename>${PROJECT_HOME}/pipelines/time.hpl</filename>
+      <filename>${PROJECT_HOME}/etl/time.hpl</filename>
       <loglevel>Basic</loglevel>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
@@ -119,7 +119,7 @@
       <clear_rows>N</clear_rows>
       <create_parent_folder>N</create_parent_folder>
       <exec_per_row>N</exec_per_row>
-      <filename>${PROJECT_HOME}/pipelines/shipping-method.hpl</filename>
+      <filename>${PROJECT_HOME}/etl/shipping-method.hpl</filename>
       <loglevel>Basic</loglevel>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
@@ -131,6 +131,32 @@
       <wait_until_finished>Y</wait_until_finished>
       <parallel>N</parallel>
       <xloc>480</xloc>
+      <yloc>48</yloc>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>Fact ETL</name>
+      <description/>
+      <type>PIPELINE</type>
+      <attributes/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <clear_files>N</clear_files>
+      <clear_rows>N</clear_rows>
+      <create_parent_folder>N</create_parent_folder>
+      <exec_per_row>N</exec_per_row>
+      <filename>${PROJECT_HOME}/etl/facts.hpl</filename>
+      <loglevel>Basic</loglevel>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <params_from_previous>N</params_from_previous>
+      <run_configuration>local</run_configuration>
+      <set_append_logfile>N</set_append_logfile>
+      <set_logfile>N</set_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <parallel>N</parallel>
+      <xloc>592</xloc>
       <yloc>48</yloc>
       <attributes_hac/>
     </action>
@@ -160,6 +186,13 @@
     <hop>
       <from>Time ETL</from>
       <to>Shipping Method ETL</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Shipping Method ETL</from>
+      <to>Fact ETL</to>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
