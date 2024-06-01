@@ -421,16 +421,19 @@ FROM gravity_books.customer
         <condition>=</condition>
         <field>customer_id</field>
         <name>customer_id</name>
+        <name2/>
       </key>
       <key>
         <condition>=</condition>
         <field>street_name</field>
         <name>street_name</name>
+        <name2/>
       </key>
       <key>
         <condition>=</condition>
         <field>street_number</field>
         <name>street_number</name>
+        <name2/>
       </key>
       <schema>gravity_books_dwh</schema>
       <table>customer</table>

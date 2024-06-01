@@ -59,7 +59,6 @@
         <condition>=</condition>
         <field>time_id</field>
         <name>time_id</name>
-        <name2/>
       </key>
       <schema>gravity_books_dwh</schema>
       <table>time</table>

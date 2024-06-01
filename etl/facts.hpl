@@ -168,7 +168,7 @@ FROM gravity_books_dwh.customer
         <field>book_sk</field>
         <name>book_sk</name>
       </key>
-      <schema/>
+      <schema>gravity_books_dwh</schema>
       <table>book_sales_facts</table>
       <value>
         <name>time_sk</name>
@@ -220,12 +220,12 @@ FROM gravity_books_dwh.customer
     <sql>SELECT
     c.customer_id,
     b.book_id,
-    YEAR(o.order_date) AS order_year,
-    MONTH(o.order_date) AS order_month,  
-    DAY(o.order_date) AS order_day,
-    HOUR(o.order_date) AS order_hour,
-    MINUTE(o.order_date) AS order_minute,
-    SECOND(o.order_date) AS order_second,
+    YEAR(oh.status_date) AS year,
+    MONTH(oh.status_date) AS month,  
+    DAY(oh.status_date) AS day,
+    HOUR(oh.status_date) AS hour,
+    MINUTE(oh.status_date) AS minute,
+    SECOND(oh.status_date) AS second,
     s.method_id,
     SUM(ol.price) AS revenue_book_sales
 FROM
@@ -247,11 +247,12 @@ WHERE
 GROUP BY
     c.customer_id,
     b.book_id,
-    o.order_date,
+    oh.status_date,
     s.method_id
 ORDER BY
     c.customer_id,
-    b.book_id, o.order_date</sql>
+    b.book_id,
+    oh.status_date</sql>
     <variables_active>N</variables_active>
     <attributes/>
     <GUI>
