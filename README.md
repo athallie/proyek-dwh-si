@@ -9,10 +9,11 @@ Analisis sales buku toko Gravity Books.
 
 ## Penggunaan
 ### Database Sumber dan Data Warehouse
-1. Buat database gravity_books di server MySQL/MariaDB
-2. Jalankan semua kueri sql dari Sumber Dataset di gravity_books
-3. Jalankan kueri sql sql-scripts/dataset-preload-config.sql di gravity_books
-4. Jalankan kueri sql sql-scripts/data-warehouse-ddl.sql di server PostgreSQL
+1. Buat database gravity_books di server MySQL (jangan MariaDB)
+2. Jalankan semua kueri sql dari Sumber Dataset di gravity_books pada gravity_books
+3. Jalankan kueri "create database..." dari sql-scripts/data-warehouse-ddl.sql di server MySQL
+4. Ubah database dari sesi _console_ kueri ke gravity_books_dwh
+5. Jalankan kueri setelah "create database..." dari sql-scripts/data-warehouse-ddl.sql
 
 ### Apache Hop
 1. Buat proyek baru dalam Apache Hop dengan folder proyek ini sebagai direktorinya
