@@ -1,7 +1,4 @@
-CREATE DATABASE gravity_books_dwh;
-ALTER DATABASE gravity_books_dwh
-    CHARACTER SET = 'utf8mb4'
-    COLLATE = 'utf8mb4_general_ci';
+CREATE DATABASE IF NOT EXISTS gravity_books_dwh character set = 'utf8mb4' collate = 'utf8mb4_general_ci';
 
 CREATE TABLE IF NOT EXISTS customer (
     customer_id INT,
@@ -55,20 +52,3 @@ CREATE TABLE IF NOT EXISTS book_sales_facts (
     CONSTRAINT method_fk FOREIGN KEY (method_sk) REFERENCES shipping_method (method_sk),
     CONSTRAINT book_fk FOREIGN KEY (book_sk) REFERENCES book(book_sk)
 );
-
-/*Delete All*/
-
-/*delete from customer;
-drop table customer;
-
-delete from time;
-drop table time;
-
-delete from shipping_method;
-drop table shipping_method;
-
-delete from book;
-drop table book;
-
-delete from book_sales_facts;
-drop table book_sales_facts;*/
