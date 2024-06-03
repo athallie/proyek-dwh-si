@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS gravity_books_dwh character set = 'utf8mb4' collate = 'utf8mb4_general_ci';
 
-CREATE TABLE IF NOT EXISTS customer (
+CREATE TABLE IF NOT EXISTS gravity_books_dwh.customer (
     customer_id INT,
     customer_sk SERIAL,
     name VARCHAR(1000),
@@ -11,25 +11,35 @@ CREATE TABLE IF NOT EXISTS customer (
     PRIMARY KEY (customer_id, street_name, street_number)
 );
 
-CREATE TABLE IF NOT EXISTS time (
-    time_id INT PRIMARY KEY,
-    time_sk SERIAL UNIQUE,
+CREATE TABLE IF NOT EXISTS gravity_books_dwh.time (
+    time_sk SERIAL UNIQUE PRIMARY KEY,
     year INT,
     month INT,
-    day INT,
-    hour INT,
-    minute INT,
-    second INT
+    day INT
 );
+SET @@cte_max_recursion_depth = 1500;
+INSERT INTO time (year, month, day)
+WITH RECURSIVE DateSequence AS (
+    SELECT '2021-01-01' AS date
+    UNION ALL
+    SELECT DATE_ADD(date, INTERVAL 1 DAY)
+    FROM DateSequence
+    WHERE date < '2024-12-31'
+)
+SELECT
+    YEAR(date) AS year,
+    MONTH(date) AS month,
+    DAY(date) AS day
+FROM DateSequence;
 
-CREATE TABLE IF NOT EXISTS shipping_method (
+CREATE TABLE IF NOT EXISTS gravity_books_dwh.shipping_method (
     method_id INT PRIMARY KEY,
     method_sk SERIAL,
     method_name VARCHAR(100),
     cost DECIMAL
 );
 
-CREATE TABLE IF NOT EXISTS book (
+CREATE TABLE IF NOT EXISTS gravity_books_dwh.book (
     book_id INT PRIMARY KEY,
     book_sk SERIAL,
     title VARCHAR(500),
@@ -40,7 +50,7 @@ CREATE TABLE IF NOT EXISTS book (
     pages INT
 );
 
-CREATE TABLE IF NOT EXISTS book_sales_facts (
+CREATE TABLE IF NOT EXISTS gravity_books_dwh.book_sales_facts (
     book_sales_facts_id SERIAL PRIMARY KEY,
     time_sk BIGINT UNSIGNED,
     customer_sk BIGINT UNSIGNED,

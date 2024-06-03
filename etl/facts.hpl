@@ -223,9 +223,6 @@ FROM gravity_books_dwh.customer
     YEAR(oh.status_date) AS year,
     MONTH(oh.status_date) AS month,  
     DAY(oh.status_date) AS day,
-    HOUR(oh.status_date) AS hour,
-    MINUTE(oh.status_date) AS minute,
-    SECOND(oh.status_date) AS second,
     s.method_id,
     SUM(ol.price) AS revenue_book_sales
 FROM
@@ -391,23 +388,11 @@ ORDER BY
         <name>day</name>
         <field>day</field>
       </key>
-      <key>
-        <name>hour</name>
-        <field>hour</field>
-      </key>
-      <key>
-        <name>minute</name>
-        <field>minute</field>
-      </key>
-      <key>
-        <name>second</name>
-        <field>second</field>
-      </key>
       <value>
         <name>time_sk</name>
         <rename>time_sk</rename>
         <default/>
-        <type>Integer</type>
+        <type>BigNumber</type>
       </value>
     </lookup>
     <attributes/>
@@ -494,14 +479,10 @@ FROM gravity_books_dwh.shipping_method
     <execute_each_row>N</execute_each_row>
     <limit>0</limit>
     <sql>SELECT
-  time_id
-, time_sk
+  time_sk
 , year
 , month
 , day
-, hour
-, minute
-, second
 FROM gravity_books_dwh.time
 </sql>
     <variables_active>N</variables_active>
